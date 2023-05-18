@@ -22,7 +22,8 @@ public class UserService {
      * @return UUID
      */
     public UUID createUser(UserCreateRequest req) {
-        // 요청에 담긴 이메일로 중복 체크 TODO
+        // 요청에 담긴 이메일로 중복 체크
+        duplicateCheck(req.getEmailAddress());
 
         // DAO를 Entity로 변환
         log.info("유저 생성 요청을 유저 엔티티로 변환하겠습니다.");
@@ -36,5 +37,9 @@ public class UserService {
         // savedUserId를 반환
         log.info("DB에 반영된 User UUID를 반환합니다.");
         return savedUserId;
+    }
+
+    private void duplicateCheck(String emailAddress) {
+        userRepository.findByEmailAddress(emailAddress).ifPresent(userEntity -> { throw new RuntimeException("중복되는 유저 정보입니다.");});
     }
 }
