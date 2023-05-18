@@ -3,6 +3,8 @@ package com.example.gotogether.domain.user.application;
 import com.example.gotogether.domain.user.dao.UserRepository;
 import com.example.gotogether.domain.user.dto.UserCreateRequest;
 import com.example.gotogether.domain.user.entity.UserEntity;
+import com.example.gotogether.global.error.AppException;
+import com.example.gotogether.global.error.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,6 @@ public class UserService {
     }
 
     private void duplicateCheck(String emailAddress) {
-        userRepository.findByEmailAddress(emailAddress).ifPresent(userEntity -> { throw new RuntimeException("중복되는 유저 정보입니다.");});
+        userRepository.findByEmailAddress(emailAddress).ifPresent(userEntity -> { throw new AppException(ErrorCode.DUPLICATED_USER);});
     }
 }
