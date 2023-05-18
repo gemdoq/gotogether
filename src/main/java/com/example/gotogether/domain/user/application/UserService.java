@@ -23,7 +23,9 @@ public class UserService {
      */
     public UUID createUser(UserCreateRequest req) {
         // 요청에 담긴 이메일로 중복 체크
+        log.info("유저 생성 요청의 이메일({})로 중복체크 하겠습니다.", req.getEmailAddress());
         duplicateCheck(req.getEmailAddress());
+        log.info("{}이 중복되지 않습니다.", req.getEmailAddress());
 
         // DAO를 Entity로 변환
         log.info("유저 생성 요청을 유저 엔티티로 변환하겠습니다.");
