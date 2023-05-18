@@ -29,6 +29,11 @@ public class UserEntity {
     private String phoneNumber;
 
     public UserEntity(String username, String account, String password, String emailAddress, String phoneNumber) {
+        this.username = username;
+        this.account = account;
+        this.password = password;
+        this.emailAddress = emailAddress;
+        this.phoneNumber = phoneNumber;
     }
 
     public static UserEntity toEntity(UserCreateRequest req) {
