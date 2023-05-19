@@ -9,10 +9,12 @@ import com.example.gotogether.global.error.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -22,6 +24,7 @@ public class UserService {
      * @param req 유저실명, 계정명, 비밀번호, 이메일, 전화번호
      * @return UUID
      */
+    @Transactional
     public UserCreateResponse createUser(UserCreateRequest req) {
         log.info("유저 생성 요청 서비스 시작됩니다.");
 
