@@ -12,6 +12,6 @@ public enum ErrorCode {
     DUPLICATED_USER(HttpStatus.CONFLICT, "이미 등록된 유저입니다.");
 
     private HttpStatus httpStatus;
-    private String errorMessage;
+    private String errorCodeMessage;
 
 }
