@@ -2,14 +2,13 @@ package com.example.gotogether.domain.user.application;
 
 import com.example.gotogether.domain.user.dao.UserRepository;
 import com.example.gotogether.domain.user.dto.UserCreateRequest;
+import com.example.gotogether.domain.user.dto.UserCreateResponse;
 import com.example.gotogether.domain.user.entity.UserEntity;
 import com.example.gotogether.global.error.AppException;
 import com.example.gotogether.global.error.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -23,7 +22,9 @@ public class UserService {
      * @param req 유저실명, 계정명, 비밀번호, 이메일, 전화번호
      * @return UUID
      */
-    public UUID createUser(UserCreateRequest req) {
+    public UserCreateResponse createUser(UserCreateRequest req) {
+        log.info("유저 생성 요청 서비스 시작됩니다.");
+
         // 요청에 담긴 이메일로 중복 체크
         log.info("유저 생성 요청의 이메일({})로 중복체크 하겠습니다.", req.getEmailAddress());
         duplicateCheck(req.getEmailAddress());
@@ -33,14 +34,18 @@ public class UserService {
         log.info("유저 생성 요청을 유저 엔티티로 변환하겠습니다.");
         UserEntity reqUser = UserEntity.toEntity(req);
 
-        // Entity를 JPA em에 등록하고 해당 Entity id를 savedUserId 저장
+        // Entity를 JPA em에 등록하고 해당 Entity를 savedUser 저장
         log.info("유저 엔티티를 JPA em에 등록하겠습니다.");
-        UUID savedUserId = userRepository.save(reqUser).getId();
+        UserEntity savedUser = userRepository.save(reqUser);
         log.info("요청된 유저 정보 변경사항이 DB에 정상적으로 반영되었습니다.");
 
-        // savedUserId를 반환
-        log.info("DB에 반영된 User UUID를 반환합니다.");
-        return savedUserId;
+        // Entity를 savedUserDto로 변환
+        log.info("반영된 유저 정보 변경사항이 DTO로 변환됩니다.");
+        UserCreateResponse savedUserDto = UserCreateResponse.toDto(savedUser);
+        log.info("반영된 유저 정보 변경사항이 DTO로 변환되었습니다.");
+
+        log.info("유저 생성 요청 서비스 종료됩니다.");
+        return savedUserDto;
     }
 
     private void duplicateCheck(String emailAddress) {
