@@ -7,8 +7,14 @@ import com.example.gotogether.global.error.AppException;
 import com.example.gotogether.global.error.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -71,6 +77,32 @@ public class UserService {
 
         log.info("유저 조회 요청 서비스 종료합니다.");
         return foundUserDto;
+    }
+
+    public Page<UserReadResponse> readAllUser(PageRequest pageable) {
+        log.info("모든 유저 조회 요청 서비스 시작합니다.");
+
+        // Entity를 담은 Page를 DB 조회
+        log.info("모든 유저 정보 페이지 DB 조회합니다.");
+        Page<UserEntity> userEntityPage = userRepository.findAll(pageable);
+        log.info("모든 유저 정보 페이지 DB 조회했습니다.");
+
+        // Entity를 담은 Page를 DTO를 담은 List로 변환
+        log.info("모든 유저 정보 페이지 DTO 리스트 변환합니다.");
+        List<UserReadResponse> dtoList = userEntityPage
+                .getContent()
+                .stream()
+                .map(UserReadResponse::of)
+                .collect(Collectors.toList());
+        log.info("모든 유저 정보 페이지 DTO 리스트 변환했습니다.");
+
+        // DTO를 담은 List를 DTO를 담은 Page로 변환
+        log.info("DTO 리스트 DTO 페이지 변환합니다.");
+        Page<UserReadResponse> dtoPage = new PageImpl<>(dtoList, pageable, userEntityPage.getTotalElements());
+        log.info("DTO 리스트 DTO 페이지 변환했습니다.");
+
+        log.info("모든 유저 조회 요청 서비스 종료합니다.");
+        return dtoPage;
     }
 
     /**
