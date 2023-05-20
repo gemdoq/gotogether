@@ -1,9 +1,7 @@
 package com.example.gotogether.domain.user.api;
 
 import com.example.gotogether.domain.user.application.UserService;
-import com.example.gotogether.domain.user.dto.UserCreateRequest;
-import com.example.gotogether.domain.user.dto.UserCreateResponse;
-import com.example.gotogether.domain.user.dto.UserReadResponse;
+import com.example.gotogether.domain.user.dto.*;
 import com.example.gotogether.global.response.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +33,16 @@ public class UserRestController {
         UserReadResponse res = userService.readUserByAccount(account);
         log.info("유저 조회 요청 처리했습니다.");
         log.info("유저 조회 요청 컨트롤러 종료합니다.");
+        return ResponseEntity.ok(Response.success(res));
+    }
+
+    @PutMapping("/{account}")
+    public ResponseEntity<Response<UserUpdateResponse>> userUpdate(@PathVariable String account, @RequestBody UserUpdateRequest req) {
+        log.info("유저 수정 요청 컨트롤러 시작합니다.");
+        log.info("유저 수정 요청 들어왔습니다.");
+        UserUpdateResponse res = userService.updateUser(account, req);
+        log.info("유저 수정 요청 처리했습니다.");
+        log.info("유저 수정 요청 컨트롤러 종료합니다.");
         return ResponseEntity.ok(Response.success(res));
     }
 }
