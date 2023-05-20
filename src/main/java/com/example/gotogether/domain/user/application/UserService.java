@@ -1,9 +1,7 @@
 package com.example.gotogether.domain.user.application;
 
 import com.example.gotogether.domain.user.dao.UserRepository;
-import com.example.gotogether.domain.user.dto.UserCreateRequest;
-import com.example.gotogether.domain.user.dto.UserCreateResponse;
-import com.example.gotogether.domain.user.dto.UserReadResponse;
+import com.example.gotogether.domain.user.dto.*;
 import com.example.gotogether.domain.user.entity.UserEntity;
 import com.example.gotogether.global.error.AppException;
 import com.example.gotogether.global.error.ErrorCode;
@@ -75,6 +73,35 @@ public class UserService {
         return foundUserDto;
     }
 
+    /**
+     * 유저 수정
+     * @param account 계정명
+     * @param req 유저실명, 계정명, 비밀번호, 이메일, 전화번호
+     * @return UserUpdateResponse
+     */
+    @Transactional
+    public UserUpdateResponse updateUser(String account, UserUpdateRequest req) {
+        log.info("유저 수정 요청 서비스 시작합니다.");
+
+        // 요청에 담긴 계정명으로 조회
+        log.info("유저 수정 요청 계정명({}) DB 조회합니다.", account);
+        UserEntity foundUser = findUserByAccount(account);
+        log.info("계정명({}) 유저 조회 성공했습니다.", account);
+
+        // 조회된 유저 수정
+        log.info("조회된 유저 정보 수정합니다.");
+        UserEntity updatedUser = foundUser.update(req);
+        log.info("조회된 유저 정보 수정했습니다.");
+
+        // 수정된 Entity를 foundUserDto로 변환
+        log.info("수정된 유저 정보 DTO 변환합니다.");
+        UserUpdateResponse updatedUserDto = UserUpdateResponse.toDto(updatedUser);
+        log.info("수정된 유저 정보 DTO 변환했습니다.");
+
+        log.info("유저 수정 요청 서비스 종료합니다.");
+        return updatedUserDto;
+    }
+
     private UserEntity findUserByAccount(String account) {
         return userRepository.findByAccount(account)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, String.format("해당 계정명(%s)의 유저가 존재하지 않습니다.", account)));
@@ -84,6 +111,5 @@ public class UserService {
         userRepository.findByEmailAddress(emailAddress)
                 .ifPresent(userEntity -> { throw new AppException(ErrorCode.DUPLICATED_USER);});
     }
-    
-    
+
 }
