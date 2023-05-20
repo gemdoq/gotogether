@@ -1,6 +1,7 @@
 package com.example.gotogether.domain.user.entity;
 
 import com.example.gotogether.domain.user.dto.UserCreateRequest;
+import com.example.gotogether.domain.user.dto.UserUpdateRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,6 +45,25 @@ public class UserEntity {
                 req.getEmailAddress(),
                 req.getPhoneNumber()
         );
+    }
+
+    public UserEntity update(UserUpdateRequest req) {
+        if(req.getUsername() != null) {
+            this.username = req.getUsername();
+        }
+        if(req.getAccount() != null) {
+            this.account = req.getAccount();
+        }
+        if(req.getPassword() != null) {
+            this.password = req.getPassword();
+        }
+        if(req.getEmailAddress() != null) {
+            this.emailAddress = req.getEmailAddress();
+        }
+        if(req.getPhoneNumber() != null) {
+            this.phoneNumber = req.getPhoneNumber();
+        }
+        return this;
     }
 }
 
