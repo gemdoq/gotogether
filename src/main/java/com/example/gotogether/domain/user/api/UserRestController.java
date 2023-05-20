@@ -45,4 +45,14 @@ public class UserRestController {
         log.info("유저 수정 요청 컨트롤러 종료합니다.");
         return ResponseEntity.ok(Response.success(res));
     }
+
+    @DeleteMapping("/{account}")
+    public ResponseEntity<Response<UserDeleteResponse>> userDelete(@PathVariable String account) {
+        log.info("유저 삭제 요청 컨트롤러 시작합니다.");
+        log.info("유저 삭제 요청 들어왔습니다.");
+        UserDeleteResponse res = userService.deleteUser(account);
+        log.info("유저 삭제 요청 처리했습니다.");
+        log.info("유저 삭제 요청 컨트롤러 종료합니다.");
+        return ResponseEntity.ok(Response.success(res));
+    }
 }
