@@ -102,6 +102,34 @@ public class UserService {
         return updatedUserDto;
     }
 
+    /**
+     * 유저 삭제
+     * @param account 계정명
+     * @return UserDeleteResponse
+     */
+    @Transactional
+    public UserDeleteResponse deleteUser(String account) {
+        log.info("유저 삭제 요청 서비스 시작합니다.");
+
+        // 요청에 담긴 계정명으로 조회
+        log.info("유저 삭제 요청 계정명({}) DB 조회합니다.", account);
+        UserEntity foundUser = findUserByAccount(account);
+        log.info("계정명({}) 유저 조회 성공했습니다.", account);
+
+        // 조회된 유저 삭제
+        log.info("조회된 유저 정보 삭제합니다.");
+        userRepository.delete(foundUser);
+        log.info("조회된 유저 정보 삭제했습니다.");
+
+        // 삭제된 Entity를 foundUserDto로 변환
+        log.info("삭제된 유저 정보 DTO 변환합니다.");
+        UserDeleteResponse deletedUserDto = UserDeleteResponse.toDto(foundUser);
+        log.info("삭제된 유저 정보 DTO 변환했습니다.");
+
+        log.info("유저 삭제 요청 서비스 종료합니다.");
+        return deletedUserDto;
+    }
+
     private UserEntity findUserByAccount(String account) {
         return userRepository.findByAccount(account)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND, String.format("해당 계정명(%s)의 유저가 존재하지 않습니다.", account)));
@@ -111,5 +139,4 @@ public class UserService {
         userRepository.findByEmailAddress(emailAddress)
                 .ifPresent(userEntity -> { throw new AppException(ErrorCode.DUPLICATED_USER);});
     }
-
 }
