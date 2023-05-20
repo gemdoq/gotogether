@@ -1,11 +1,13 @@
 package com.example.gotogether.domain.user.dto;
 
 import com.example.gotogether.domain.user.entity.UserEntity;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.UUID;
 
 @Getter
+@Builder
 public class UserReadResponse {
     private UUID id;
     private String username;
@@ -29,5 +31,15 @@ public class UserReadResponse {
                 foundUser.getEmailAddress(),
                 foundUser.getPhoneNumber()
         );
+    }
+
+    public static UserReadResponse of(UserEntity userEntity) {
+        return UserReadResponse.builder()
+                .id(userEntity.getId())
+                .username(userEntity.getUsername())
+                .account(userEntity.getAccount())
+                .emailAddress(userEntity.getEmailAddress())
+                .phoneNumber(userEntity.getPhoneNumber())
+                .build();
     }
 }
