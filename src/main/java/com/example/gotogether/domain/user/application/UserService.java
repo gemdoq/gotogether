@@ -38,7 +38,7 @@ public class UserService {
         duplicateCheck(req.getEmailAddress());
         log.info("{} → 중복되지 않습니다.", req.getEmailAddress());
 
-        // DAO를 Entity로 변환
+        // DTO를 Entity로 변환
         log.info("유저 생성 요청 → 유저 엔티티 변환하겠습니다.");
         UserEntity reqUser = UserEntity.toEntity(req);
         log.info("유저 생성 요청 → 유저 엔티티 변환했습니다.");
